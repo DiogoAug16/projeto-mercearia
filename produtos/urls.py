@@ -22,4 +22,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.visualizarLoja, name='loja'),
+    path('<slug:categoria_slug>/', views.visualizarLoja,
+         name='produtos_por_categoria')
 ]
