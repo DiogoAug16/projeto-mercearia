@@ -123,8 +123,11 @@
 
 <header class="border-bottom mb-4 pb-3">
 		<div class="form-inline">
-			<span class="mr-md-auto">32 Items found </span>
-			
+			{%if prod_quant > 1%}
+				<span class="mr-md-auto">{{prod_quant}} items encontrados</span>
+			{%else%}
+				<span class="mr-md-auto">{{prod_quant}} item encontrado</span>
+			{%endif%}
 		</div>
 </header><!-- sect-heading -->
 
@@ -133,9 +136,11 @@
 	<div class="col-md-4">
 		<figure class="card card-product-grid">
 			<div class="img-wrap"> 
-				
-				<img src="{{prod.imagens.url}}">
-				
+				{%if prod.imagens%}
+					<img src="{{prod.imagens.url}}">
+				{%else%}
+					<h2>Produto sem imagem<h2>
+				{%endif%}		
 			</div> <!-- img-wrap.// -->
 			<figcaption class="info-wrap">
 				<div class="fix-height">
