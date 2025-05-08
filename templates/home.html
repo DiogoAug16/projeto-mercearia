@@ -28,9 +28,9 @@
 	{%for prod in produtos %}
 	<div class="col-md-3">
 		<div class="card card-product-grid">
-			<a href="./product-detail.html" class="img-wrap"> <img src="{{ prod.imagens.url }}"> </a>
+			<a href="{{prod.get_url}}" class="img-wrap"> <img src="{{ prod.imagens.url }}"> </a>
 			<figcaption class="info-wrap">
-				<a href="./product-detail.html" class="title">{{ prod.produto_nome }}</a>
+				<a href="{{prod.get_url}}" class="title">{{ prod.produto_nome }}</a>
 				<div class="price mt-1">R${{prod.preco}}</div> <!-- price-wrap.// -->
 			</figcaption>
 		</div>

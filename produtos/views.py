@@ -25,3 +25,12 @@ def visualizarLoja(request, categoria_slug=None):
     }
 
     return render(request, 'loja/loja.html', context)
+
+def visualizarDetalheProduto(request, categoria_slug, produto_slug):
+    produto = Produto.objects.get(slug = produto_slug, categoria__slug=categoria_slug)
+    contexto = {
+        'produto' : produto
+    }
+
+    return render(request, 'loja/produto_detalhe.html', contexto)
+    
