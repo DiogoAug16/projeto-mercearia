@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 
 from carrinho.models import CarItem, Carrinho
 from produtos.models import Produto
+from django.core.exceptions import ObjectDoesNotExist
 
 def getCarId(request):
     carSession = request.session.session_key
@@ -10,8 +11,19 @@ def getCarId(request):
     return carSession
 
 # Create your views here.
-def visualizarCarrinho(request):
-    return render(request, 'loja/carrinho.html')
+def visualizarCarrinho(request, total = 0, quantidade = 0, car_items = None):
+
+    try:
+        car = Carrinho.objects.get(car_id = getCarId(request))
+        car_items = CarItem.objects.filter(carrinho = car, esta_disponivel = True)
+    except ObjectDoesNotExist:
+        pass
+
+    contexto = {
+        'car_items':car_items,
+    }
+
+    return render(request, 'loja/carrinho.html', contexto)
 
 def adicionarItemCarrinho(request, produto_id):
     produto = Produto.objects.get(id=produto_id)
@@ -25,7 +37,7 @@ def adicionarItemCarrinho(request, produto_id):
 
     try:
         car_item = CarItem.objects.get(produto=produto, carrinho=carrinho)
-        car_item.quantidade =+ 1
+        car_item.quantidade += 1
         car_item.save()
     except CarItem.DoesNotExist:
         car_item = CarItem.objects.create(
