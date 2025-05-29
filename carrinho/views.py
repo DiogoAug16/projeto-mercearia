@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from carrinho.models import CarItem, Carrinho
 from produtos.models import Produto
@@ -11,15 +11,22 @@ def getCarId(request):
     return carSession
 
 # Create your views here.
-def visualizarCarrinho(request, total = 0, quantidade = 0, car_items = None):
-
+def visualizarCarrinho(request, total = 0, quantidade = 0, car_items = None, imposto = 0, total_com_imposto = 0):
     try:
         car = Carrinho.objects.get(car_id = getCarId(request))
         car_items = CarItem.objects.filter(carrinho = car, esta_disponivel = True)
+        for item in car_items:
+            total += (item.produto.preco * item.quantidade)
+            imposto += (item.produto.preco * item.quantidade) * (item.produto.imposto/100)
+            total_com_imposto = total + imposto
+            quantidade += item.quantidade
     except ObjectDoesNotExist:
         pass
 
     contexto = {
+        'imposto':imposto,
+        'total_com_imposto':total_com_imposto,
+        'total':total,
         'car_items':car_items,
     }
 
@@ -46,4 +53,23 @@ def adicionarItemCarrinho(request, produto_id):
             carrinho = carrinho,
         )
         car_item.save()
+    return redirect('carrinho')
+
+def diminuirQuantidadeProdutoCarrinho(request, produto_id):
+    car = Carrinho.objects.get(car_id = getCarId(request))
+    produto = get_object_or_404(Produto, id=produto_id)
+    car_item = CarItem.objects.get(produto=produto, carrinho=car)
+    if car_item.quantidade > 1:
+        car_item.quantidade -= 1
+        car_item.save()
+    else:
+        car_item.delete()
+    return redirect('carrinho')
+
+def removerItemCarrinho(request, produto_id):
+    car = Carrinho.objects.get(car_id = getCarId(request))
+    produto = get_object_or_404(Produto, id=produto_id)
+    car_item = CarItem.objects.get(produto=produto, carrinho=car)
+    if car_item.quantidade >= 1:
+        car_item.delete()
     return redirect('carrinho')

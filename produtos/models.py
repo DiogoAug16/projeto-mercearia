@@ -10,6 +10,7 @@ class Produto(models.Model):
     slug = models.SlugField(max_length=210, unique=True)
     descricao = models.TextField(max_length=300)
     preco = models.DecimalField(max_digits=12, decimal_places=2)
+    imposto = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     imagens = models.ImageField(upload_to='fotos/produtos', blank=True)
     estoque = models.IntegerField()
     esta_disponivel = models.BooleanField(default=True)
